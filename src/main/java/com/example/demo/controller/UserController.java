@@ -83,5 +83,17 @@ public class UserController {
         return ResponseEntity.ok(userService.getUsers(name,gender,birthdate,address,age,pageable));
 
     }
-
+    @GetMapping("/search-add-sqlnative")
+    public ResponseEntity<Page<User>> searchAllUser(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Integer age,
+            @RequestParam(required = false) Integer gender,
+            @RequestParam(required = false) String birthdate,
+            @RequestParam(required = false) String address,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size
+    ){
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(userService.getUsersforSqlnative(name,gender,birthdate,address,age,pageable));
+    }
 }

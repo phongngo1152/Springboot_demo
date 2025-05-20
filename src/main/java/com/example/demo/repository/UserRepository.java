@@ -29,15 +29,28 @@ public interface UserRepository extends JpaRepository<User, Long> {
                             @Param("age") Integer age );
 
 
-    @Query("select  u from User u where"
+    @Query("select u from User u where"
             + "(:name is null or u.nameUser like %:name%) and"
             + "(:gender is null  or u.gender = :gender) and"
             + "(:birthdate is null  or u.birthdate = :birthdate) and"
-            + "(:age is null  or u.age = :age) and"
+            + "(:age is null or u.age = :age) and"
             + "(:address is null or u.address = :address)")
     Page<User> searchbyAll(@Param("name") String name,
                            @Param("gender") Integer gender,
                            @Param("birthdate") String birthdate,
                            @Param("address") String address,
                            @Param("age") Integer age, Pageable pageable);
+
+    @Query( value = "select * from User u where"
+            +"(:name is null or u.nameUser like %:name%) and"
+            +"(:gender is null or u.gender = :gender) and"
+            +"(:birthdate is null or u.birthdate = :birthdate) and"
+            +"(:age is null or u.age = :age) and"
+            +"(:address is null or u.address = :address)", nativeQuery = true)
+    Page<User> searchAllBySqlnative(@Param("name") String name,
+                                    @Param("gender") Integer gender,
+                                    @Param("birthdate") String birthdate,
+                                    @Param("address") String address,
+                                    @Param("age") Integer age, Pageable pageable);
+
 }

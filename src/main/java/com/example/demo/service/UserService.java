@@ -16,4 +16,5 @@ public interface UserService {
     boolean deleteUser(Long id);
     List<User> searchUsers(String name, Integer gender, String birthdate, String address, Integer age);
     Page<User> getUsers(String name, Integer gender, String birthdate, String address, Integer age,Pageable pageable);
+    Page<User> getUsersforSqlnative(String name, Integer gender, String birthdate, String address, Integer age,Pageable pageable);
 }

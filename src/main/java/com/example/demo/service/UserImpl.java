@@ -71,5 +71,10 @@ public class UserImpl implements UserService {
         return userRepository.searchbyAll(name,gender,birthdate,address,age,pageable);
     }
 
+    @Override
+    public Page<User> getUsersforSqlnative(String name, Integer gender, String birthdate, String address, Integer age, Pageable pageable) {
+        return userRepository.searchAllBySqlnative(name,gender,birthdate,address,age,pageable);
+    }
+
 
 }
