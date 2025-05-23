@@ -1,21 +1,28 @@
-package com.example.demo.entity;
+package com.example.demo.dto;
 
-import jakarta.persistence.*;
-
+import java.io.Serializable;
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "User")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class UserEvent implements Serializable {
     private Long id;
-    @Column(name = "nameUser")
     private String nameUser;
     private int age;
     private int gender;
     private String address;
     private LocalDate birthdate;
+
+    public UserEvent() {
+    }
+
+    public UserEvent(Long id, String nameUser, int age, int gender, String address, LocalDate birthdate) {
+        this.id = id;
+        this.nameUser = nameUser;
+        this.age = age;
+        this.gender = gender;
+        this.address = address;
+        this.birthdate = birthdate;
+    }
+
     public Long getId() {
         return id;
     }
@@ -31,7 +38,6 @@ public class User {
     public void setNameUser(String nameUser) {
         this.nameUser = nameUser;
     }
-
 
     public int getAge() {
         return age;
@@ -63,29 +69,5 @@ public class User {
 
     public void setBirthdate(LocalDate birthdate) {
         this.birthdate = birthdate;
-    }
-
-    public User(Long id, String nameUser, int age, int gender, String address, LocalDate birthdate) {
-        this.id = id;
-        this.nameUser = nameUser;
-        this.age = age;
-        this.gender = gender;
-        this.address = address;
-        this.birthdate = birthdate;
-    }
-
-    public User() {
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", nameUser='" + nameUser + '\'' +
-                ", age=" + age +
-                ", gender=" + gender +
-                ", address='" + address + '\'' +
-                ", birthdate=" + birthdate +
-                '}';
     }
 }
