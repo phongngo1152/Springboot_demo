@@ -2,16 +2,19 @@ package com.example.demo.service.Impl;
 
 import com.example.demo.config.RabbitMQConfig;
 import com.example.demo.dto.UserEvent;
+import com.example.demo.dto.DTOcreateUserRequest;
+import com.example.demo.entity.Product;
 import com.example.demo.entity.User;
+import com.example.demo.repository.command.ProductRepository;
 import com.example.demo.repository.command.UserRepository;
 import com.example.demo.service.Dao.UserService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +23,8 @@ public class UserImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
     private RabbitTemplate rabbitTemplate;
 
 
@@ -27,6 +32,8 @@ public class UserImpl implements UserService {
     public static final String EXCHANGE = "UserRequestModel.exchange";
     public static final String ROUTING_KEY = "UserRequestModel.routingkey";
     public static final String ROUTING_DELETE = "user.delete";
+    public static final String ROUTING_Transactional = "UserRequestModel.Transactional";
+
 
 
     public UserImpl(RabbitTemplate rabbitTemplate) {
@@ -135,6 +142,49 @@ public class UserImpl implements UserService {
     public Page<User> getUsersforSqlnative(String name, Integer gender, String birthdate, String address, Integer age, Pageable pageable) {
         return userRepository.searchAllBySqlnative(name,gender,birthdate,address,age,pageable);
     }
+
+    @Override
+    public void createUserWithProduct(DTOcreateUserRequest request) {
+        // Kiểm tra tên
+        if (request.getNameUser() == null || request.getNameUser().trim().isEmpty()) {
+            throw new RuntimeException("Tên người dùng không được để trống");
+        }
+        // Kiểm tra tuổi
+        if (request.getAge() < 0) {
+            throw new RuntimeException("Tuổi không hợp lệ");
+        }
+        // Kiểm tra giới tính
+        if (request.getGender() != 0 && request.getGender() != 1) {
+            throw new RuntimeException("Giới tính không được để trống");
+        }
+        // Kiểm tra địa chỉ
+        if (request.getAddress() == null || request.getAddress().trim().isEmpty()) {
+            throw new RuntimeException("Địa chỉ không được để trống");
+        }
+        // Kiểm tra ngày sinh
+        if (request.getBirthdate() == null || request.getBirthdate().isAfter(LocalDate.now())) {
+            throw new RuntimeException("Ngày sinh không hợp lệ");
+        }
+
+        // Thực hiện tạo User
+        User newUser = new User();
+        newUser.setNameUser(request.getNameUser());
+        newUser.setAge(request.getAge());
+        newUser.setGender(request.getGender());
+        newUser.setAddress(request.getAddress());
+        newUser.setBirthdate(request.getBirthdate());
+        newUser = userRepository.save(newUser);
+
+        // Tạo Product
+        for (String productName : request.getProductNames()) {
+            Product newProduct = new Product();
+            newProduct.setProductName(productName);
+            newProduct.setUser(newUser);
+            newProduct = productRepository.save(newProduct);
+        }
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY, request);
+    }
+
 
 
 }

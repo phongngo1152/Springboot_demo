@@ -1,5 +1,6 @@
 package com.example.demo.service.Dao;
 
+import com.example.demo.dto.DTOcreateUserRequest;
 import com.example.demo.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,5 +18,5 @@ public interface UserService {
     List<User> searchUsers(String name, Integer gender, String birthdate, String address, Integer age);
     Page<User> getUsers(String name, Integer gender, String birthdate, String address, Integer age,Pageable pageable);
     Page<User> getUsersforSqlnative(String name, Integer gender, String birthdate, String address, Integer age,Pageable pageable);
-
+    void createUserWithProduct(DTOcreateUserRequest request);
 }

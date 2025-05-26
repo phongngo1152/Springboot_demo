@@ -12,12 +12,15 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
     public static final String EXCHANGE = "UserRequestModel.exchange";
 
-
+//create-update
     public static final String QUEUE = "UserRequestModel.queue";
     public static final String ROUTING_KEY = "UserRequestModel.routingkey";
-
+//delete
     public static final String QUEUE_DELETE = "UserRequestModel.queue.delete";
     public static final String ROUTING_DELETE = "user.delete";
+    // //create-update-Transactional
+    public static final String QUEUE_Transactional = "UserRequestModel.queue.Transactional";
+    public static final String ROUTING_Transactional = "UserRequestModel.Transactional";
 
     @Bean
     public Queue queue() {
@@ -42,6 +45,13 @@ public class RabbitMQConfig {
     @Bean
     public Binding bindingDelete(Queue deleteQueue, DirectExchange exchange) {
         return BindingBuilder.bind(deleteQueue).to(exchange).with(ROUTING_DELETE);
+    }
+    //Transactional
+    @Bean
+    public Queue TransactionalDeleteQueue() {return new Queue(QUEUE_Transactional, true);}
+    @Bean
+    public Binding bindingTransactionalDelete(Queue TransactionalDeleteQueue, DirectExchange exchange) {
+        return BindingBuilder.bind(TransactionalDeleteQueue).to(exchange).with(ROUTING_DELETE);
     }
 
     // Dùng để serialize/deserialize JSON message
