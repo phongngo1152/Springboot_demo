@@ -9,6 +9,7 @@ import java.time.LocalDate;
 public class UserRequestModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     @Column(name = "nameUser")
     private String nameUser;

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -142,7 +143,7 @@ public class UserImpl implements UserService {
     public Page<User> getUsersforSqlnative(String name, Integer gender, String birthdate, String address, Integer age, Pageable pageable) {
         return userRepository.searchAllBySqlnative(name,gender,birthdate,address,age,pageable);
     }
-
+    @Transactional("writeTransactionManager")
     @Override
     public void createUserWithProduct(DTOcreateUserRequest request) {
         // Kiểm tra tên
@@ -174,7 +175,7 @@ public class UserImpl implements UserService {
         newUser.setAddress(request.getAddress());
         newUser.setBirthdate(request.getBirthdate());
         newUser = userRepository.save(newUser);
-
+        request.setId(newUser.getId());
         // Tạo Product
         for (String productName : request.getProductNames()) {
             Product newProduct = new Product();
@@ -182,7 +183,7 @@ public class UserImpl implements UserService {
             newProduct.setUser(newUser);
             newProduct = productRepository.save(newProduct);
         }
-        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY, request);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_Transactional, request);
     }
 
 

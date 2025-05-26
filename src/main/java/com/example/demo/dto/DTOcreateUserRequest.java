@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class DTOcreateUserRequest {
+    private Long id;
     private String nameUser;
     private int age;
     private int gender;
@@ -14,13 +15,22 @@ public class DTOcreateUserRequest {
     public DTOcreateUserRequest() {
     }
 
-    public DTOcreateUserRequest(String nameUser, int age, int gender, String address, LocalDate birthdate, List<String> productNames) {
+    public DTOcreateUserRequest(Long id, String nameUser, int age, int gender, String address, LocalDate birthdate, List<String> productNames) {
+        this.id = id;
         this.nameUser = nameUser;
         this.age = age;
         this.gender = gender;
         this.address = address;
         this.birthdate = birthdate;
         this.productNames = productNames;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNameUser() {

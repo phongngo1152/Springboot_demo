@@ -51,7 +51,7 @@ public class RabbitMQConfig {
     public Queue TransactionalDeleteQueue() {return new Queue(QUEUE_Transactional, true);}
     @Bean
     public Binding bindingTransactionalDelete(Queue TransactionalDeleteQueue, DirectExchange exchange) {
-        return BindingBuilder.bind(TransactionalDeleteQueue).to(exchange).with(ROUTING_DELETE);
+        return BindingBuilder.bind(TransactionalDeleteQueue).to(exchange).with(ROUTING_Transactional);
     }
 
     // Dùng để serialize/deserialize JSON message
